@@ -24,11 +24,15 @@ import ghidra.program.model.listing.Listing;
 import ghidra.program.model.pcode.HighFunction;
 
 import java.util.ArrayList;
+import java.util.Base64;
+import java.io.FileWriter;
 
 public class GhidraDecompiler extends HeadlessScript {
 
+
   @Override
   public void run() throws Exception {
+    FileWriter fw = new FileWriter("ghidra-output.r2");
 
     // Stop after this headless script
     setHeadlessContinuationOption(HeadlessContinuationOption.ABORT);
@@ -94,8 +98,18 @@ public class GhidraDecompiler extends HeadlessScript {
         println(String.format("                      - %s", line.toString()));
       } else {
         println(String.format("0x%-8x 0x%-8x - %s", minAddress, maxAddress, line.toString()));
+try {
+String comment = line.toString().split(":", 2)[1];
+System.out.println(comment);
+String b64comment = Base64.getEncoder().encodeToString(comment.getBytes());
+        fw.write(String.format("CCu base64:%s @ 0x%x\n", b64comment, minAddress));
+} catch (Exception e) {
+System.out.println("ERROR: " + line.toString());
+}
+//0x%-8x 0x%-8x - %s", minAddress, maxAddress, line.toString()));
       }
     }
+    fw.close();
   }
 
   protected Function getFunction(long address) {
