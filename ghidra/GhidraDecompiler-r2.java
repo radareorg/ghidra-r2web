@@ -18,39 +18,82 @@ import ghidra.program.model.address.Address;
 import ghidra.program.model.listing.Function;
 import ghidra.program.model.listing.FunctionIterator;
 import ghidra.program.model.listing.Listing;
+import java.io.File;
 import java.io.FileWriter;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Base64;
 
 public class GhidraDecompiler extends HeadlessScript {
+  static String INPUT = "r2-input";
+  static String OUTPUT = "r2-output";
+
+  private String readCommand() throws Exception {
+    while (true) {
+      try {
+        String data = new String(Files.readAllBytes(Paths.get(INPUT)));
+        File file = new File(INPUT);
+        file.delete();
+        return data.trim();
+      } catch (Exception e) {
+      }
+      Thread.sleep(1000);
+    }
+  }
+
+  private void writeResult(String output) throws Exception {
+    FileWriter fw = new FileWriter(OUTPUT);
+    fw.write(output);
+    fw.close();
+  }
 
   @Override
   public void run() throws Exception {
-    FileWriter fw = new FileWriter("ghidra-output.r2");
-    FileWriter fw_dec = new FileWriter("decompiled.c");
+    long functionAddress = main(getScriptArgs());
+    if (functionAddress != 0) {
+      this.decompile(functionAddress);
+      return;
+    }
+    while (true) {
+      String cmd = readCommand();
+      if (cmd == "q") {
+        break;
+      }
+      String[] args = new String[] {cmd};
+      functionAddress = main(args);
+      this.decompile(functionAddress);
+    }
+  }
 
-    // Stop after this headless script
-    setHeadlessContinuationOption(HeadlessContinuationOption.ABORT);
-
+  public long main(String[] args) throws Exception {
     // Get the function address from the script arguments
-    String[] args = getScriptArgs();
     println(String.format("Array length: %d", args.length)); // DEBUG
 
     if (args.length == 0) {
       System.err.println("Please specify a function address!");
       System.err.println("Note: use c0ffe instead of 0xcoffee");
-      return;
+      return 0;
     }
 
-    long functionAddress;
+    long functionAddress = 0;
     try {
-      functionAddress = Long.parseLong(args[0], 16);
+      if (args[0].startsWith("0x")) {
+        functionAddress = Long.parseLong(args[0].substring(2), 16);
+      } else {
+        functionAddress = Long.parseLong(args[0], 16);
+      }
     } catch (NumberFormatException e) {
-      System.err.println(e.toString());
-      System.err.println(String.format("Invalid hex address: %s", args[0]));
-      return;
+      System.err.println(args[0] + " " + e.toString());
     }
     println(String.format("Address: %x", functionAddress)); // DEBUG
+    return functionAddress;
+  }
+
+  public void decompile(long functionAddress) throws Exception {
+    FileWriter fw = new FileWriter("ghidra-output.r2");
+
+    // Stop after this headless script
+    setHeadlessContinuationOption(HeadlessContinuationOption.ABORT);
 
     DecompInterface di = new DecompInterface();
     println("Simplification style: " + di.getSimplificationStyle()); // DEBUG
@@ -90,8 +133,6 @@ public class GhidraDecompiler extends HeadlessScript {
       }
       if (maxAddress == 0) {
         println(String.format("                      - %s", line.toString()));
-        String comment = line.toString().split(":", 2)[1];
-        fw_dec.write(String.format("%s\n", comment));
       } else {
         println(String.format("0x%-8x 0x%-8x - %s", minAddress, maxAddress, line.toString()));
         try {
@@ -99,7 +140,6 @@ public class GhidraDecompiler extends HeadlessScript {
           System.out.println(comment);
           String b64comment = Base64.getEncoder().encodeToString(comment.getBytes());
           fw.write(String.format("CCu base64:%s @ 0x%x\n", b64comment, minAddress));
-          fw_dec.write(String.format("%s\n", comment));
         } catch (Exception e) {
           System.out.println("ERROR: " + line.toString());
         }
@@ -107,7 +147,6 @@ public class GhidraDecompiler extends HeadlessScript {
       }
     }
     fw.close();
-    fw_dec.close();
   }
 
   protected Function getFunction(long address) {
