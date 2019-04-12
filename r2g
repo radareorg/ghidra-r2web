@@ -1,0 +1,53 @@
+#!/bin/sh
+ROOT=/Users/pancake/prg/r2ghidra
+
+cd ${ROOT}
+
+#if [ -z "$R2PIPE_IN" ]; then
+#	exit 1
+#fi
+if [ -z "$1" ]; then
+	echo "Usage: r2ghidra [command]"
+	echo "Commands:"
+	echo "  r2            .!r2g r2          # import r2ghidra into cmd.pdc"
+	echo '  dec [addr]    !r2g dec `?v $$`  # decompile function at given address'
+	echo "  pull                            # pull changes from ghidra into r2"
+	echo "  push                            # push comments and functions names from r2 to ghidra"
+	echo "  client [addr]                   # call the server to request the decompilation"
+	echo "  server [file]"
+#	exit 1
+fi
+
+TESTBIN=${R2_FILE}
+FCNADDR=${R2_XOFFSET}
+
+TESTBIN=/bin/ls
+case "$1" in
+r2)
+	echo '"(pdcg,!r2g client `?v $FB`>.a,. .a,rm .a)"'
+	echo 'e cmd.pdc=.(pdcg)'
+	;;
+server)
+	TESTBIN="$2"
+	if [ -z "${TESTBIN}" ]; then
+		echoh "Usage: r2g server /path/to/file"
+	else
+		rm -rf Test.*
+		analyzeHeadless . Test.gpr -import ${TESTBIN} -postScript ghidra/GhidraDecompiler.java -deleteProject
+	fi
+	;;
+client)
+	echo "$2" > r2-input
+	sleep 1
+	cat ghidra-output.r2
+	;;
+dec)
+	analyzeHeadless . Test.gpr -import ${TESTBIN} -postScript ghidra/GhidraDecompiler.java ${FCNADDR} -deleteProject
+	;;
+import)
+	analyzeHeadless . Test.gpr -import ${TESTBIN} -postScript ghidra/GhidraDecompiler.java ${FCNADDR} -deleteProject > /dev/null 2>&1
+	cat ghidra-output.r2
+	;;
+esac
+
+#analyzeHeadless . Test.gpr -import $(TESTBIN) -postScript ghidra/GhidraDecompiler.java $(FCNADDR) -deleteProject
