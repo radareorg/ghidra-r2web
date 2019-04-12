@@ -42,13 +42,15 @@ public class GhidraDecompiler extends HeadlessScript {
       return;
     }
 
-    long functionAddress;
+    long functionAddress = 0;
     try {
-      functionAddress = Long.parseLong(args[0], 16);
+      if (args[0].startsWith("0x")) {
+        functionAddress = Long.parseLong(args[0].substring(2), 16);
+      } else {
+        functionAddress = Long.parseLong(args[0], 16);
+      }
     } catch (NumberFormatException e) {
-      System.err.println(e.toString());
-      System.err.println(String.format("Invalid hex address: %s", args[0]));
-      return;
+      System.err.println(args[0] + " " + e.toString());
     }
     println(String.format("Address: %x", functionAddress)); // DEBUG
 

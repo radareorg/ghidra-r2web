@@ -1,7 +1,7 @@
 #!/bin/sh
-ROOT=/Users/pancake/prg/r2ghidra
 
-cd ${ROOT}
+ROOT=$(dirname `readlink $0`)
+cd "${ROOT}"
 
 #if [ -z "$R2PIPE_IN" ]; then
 #	exit 1
@@ -24,16 +24,20 @@ FCNADDR=${R2_XOFFSET}
 TESTBIN=/bin/ls
 case "$1" in
 r2)
-	echo '"(pdcg,!r2g client `?v $FB`>.a,. .a,rm .a)"'
-	echo 'e cmd.pdc=.(pdcg)'
+	#echo '"(pdcg,!r2g client `?v $FB`>.a,. .a,rm .a)"'
+	#echo 'e cmd.pdc=.(pdcg)'
+	#echo 'e cmd.pdc=$ghidra-dec'
+	echo '"$pdg*=.!r2g client `?v $FB`"'
+	echo '"$pdg=!r2g dec `?v $FB`"'
+	echo '"$pdga=!r2g dec `?v $FB`"'
 	;;
 server)
 	TESTBIN="$2"
 	if [ -z "${TESTBIN}" ]; then
-		echoh "Usage: r2g server /path/to/file"
+		echo "Usage: r2g server /path/to/file"
 	else
 		rm -rf Test.*
-		analyzeHeadless . Test.gpr -import ${TESTBIN} -postScript ghidra/GhidraDecompiler-r2.java -deleteProject
+		analyzeHeadless . Test.gpr -import ${TESTBIN} -postScript GhidraDecompilerR2.java -deleteProject
 	fi
 	;;
 client)
@@ -42,12 +46,23 @@ client)
 	cat ghidra-output.r2
 	;;
 dec)
-	analyzeHeadless . Test.gpr -import ${TESTBIN} -postScript ghidra/GhidraDecompiler-r2.java ${FCNADDR} -deleteProject
+	TESTBIN=/bin/ls
+	FCNADDR=$2
+	echo "FCNADDR=$2"
+	echo
+	rm -f decompiled.c
+	rm -rf Test.*
+	analyzeHeadless . Test.gpr -import ${TESTBIN} -postScript GhidraDecompiler.java ${FCNADDR} -deleteProject
+	# > /dev/null 2>&1
+	indent decompiled.c
+	cat decompiled.c
 	;;
-import)
-	analyzeHeadless . Test.gpr -import ${TESTBIN} -postScript ghidra/GhidraDecompiler-r2.java ${FCNADDR} -deleteProject > /dev/null 2>&1
+import|pull)
+	rm -rf Test.*
+	analyzeHeadless . Test.gpr -import ${TESTBIN} -postScript r2gh.py ${FCNADDR} -deleteProject > /dev/null 2>&1
 	cat ghidra-output.r2
 	;;
 esac
 
 #analyzeHeadless . Test.gpr -import $(TESTBIN) -postScript ghidra/GhidraDecompiler.java $(FCNADDR) -deleteProject
+exit 0

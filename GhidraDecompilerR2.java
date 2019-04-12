@@ -4,7 +4,7 @@
 /*
  * Decompile a function with Ghidra
  *
- * analyzeHeadless . Test.gpr -import $BINARY_NAME -postScript GhidraDecompiler.java $FUNCTION_ADDRESS -deleteProject -noanalysis
+ * analyzeHeadless . Test.gpr -import $BINARY_NAME -postScript GhidraDecompilerR2.java $FUNCTION_ADDRESS -deleteProject -noanalysis
  *
  */
 
@@ -24,7 +24,7 @@ import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Base64;
 
-public class GhidraDecompiler extends HeadlessScript {
+public class GhidraDecompilerR2 extends HeadlessScript {
   static String INPUT = "r2-input";
   static String OUTPUT = "r2-output";
 
