@@ -52,14 +52,17 @@ dec)
 	echo
 	rm -f decompiled.c
 	rm -rf Test.*
-	analyzeHeadless . Test.gpr -import ${TESTBIN} -postScript GhidraDecompiler.java ${FCNADDR} -deleteProject
-	# > /dev/null 2>&1
+	analyzeHeadless . Test.gpr -import ${TESTBIN} -postScript GhidraDecompiler.java ${FCNADDR} -deleteProject > /dev/null 2>&1
 	indent decompiled.c
 	cat decompiled.c
 	;;
 import|pull)
+	TESTBIN=/bin/ls
+	FCNADDR=$2
+	echo "Assuming you have r2 http server on port 9090"
+	echo "r2 -e http.port=9090 -c'& =h' /bin/ls"
 	rm -rf Test.*
-	analyzeHeadless . Test.gpr -import ${TESTBIN} -postScript r2gh.py ${FCNADDR} -deleteProject > /dev/null 2>&1
+	analyzeHeadless . Test.gpr -import ${TESTBIN} -postScript ghidra2radare.py -deleteProject > /dev/null 2>&1
 	cat ghidra-output.r2
 	;;
 esac
