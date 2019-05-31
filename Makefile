@@ -9,6 +9,9 @@ R2PM_BINDIR=$(shell r2pm -H R2PM_BINDIR)
 
 install:
 	ln -fs $(shell pwd)/r2g $(R2PM_BINDIR)/r2g
+	mkdir -p ~/ghidra_scripts
+	ln -fs $(shell pwd)/R2GhidraServer.java ~/ghidra_scripts/R2GhidraServer.java
+	ln -fs $(shell pwd)/R2GhidraServerSingleton.java ~/ghidra_scripts/R2GhidraServerSingleton.java
 
 uninstall:
 	rm -f $(R2PM_BINDIR)/r2g

@@ -65,6 +65,9 @@ import|pull)
 	analyzeHeadless . Test.gpr -import ${TESTBIN} -postScript ghidra2radare.py -deleteProject > /dev/null 2>&1
 	cat ghidra-output.r2
 	;;
+*)
+	curl "http://localhost:8002/cmd/$@"
+	;;
 esac
 
 #analyzeHeadless . Test.gpr -import $(TESTBIN) -postScript ghidra/GhidraDecompiler.java $(FCNADDR) -deleteProject
