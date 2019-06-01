@@ -164,22 +164,11 @@ public class R2GhidraServer extends GhidraScript {
       }
     }
   }
-  static class MyHandler implements HttpHandler {
-    public void handle(HttpExchange t) throws IOException {
-      byte [] response = "Welcome Real's HowTo test page".getBytes();
-      t.sendResponseHeaders(200, response.length);
-      OutputStream os = t.getResponseBody();
-      os.write(response);
-      os.close();
-    }
-  }
-
   public void run() throws Exception {
     this.ghidra = this;
     int port = 8002;
     // port = askInt("r2ghidra webserver", "Port number");
     server = HttpServer.create(new InetSocketAddress(port), 0);
-    server.createContext("/test", new MyHandler());
     server.createContext("/cmd", new MyCmdHandler());
     server.setExecutor(null); // creates a default executor
     server.start();
