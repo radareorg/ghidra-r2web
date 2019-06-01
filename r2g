@@ -1,11 +1,14 @@
 #!/bin/sh
 
-ROOT=$(dirname `readlink $0`)
-cd "${ROOT}"
+ROOT=$(dirname `readlink $0` 2> /dev/null)
+if [ -n "${ROOT}" ]; then
+	cd "${ROOT}"
+fi
 
-#if [ -z "$R2PIPE_IN" ]; then
-#	exit 1
-#fi
+if [ -z "$R2PIPE_IN" ]; then
+	echo "This program must be run from r2 using #!pipe r2g"
+	exit 1
+fi
 if [ -z "$1" ]; then
 	echo "Usage: r2ghidra [command]"
 	echo "Commands:"
@@ -27,23 +30,20 @@ r2)
 	#echo '"(pdcg,!r2g client `?v $FB`>.a,. .a,rm .a)"'
 	#echo 'e cmd.pdc=.(pdcg)'
 	#echo 'e cmd.pdc=$ghidra-dec'
-	echo '"$pdg*=.!r2g client `?v $FB`"'
-	echo '"$pdg=!r2g dec `?v $FB`"'
-	echo '"$pdga=!r2g dec `?v $FB`"'
+	echo '"$pddg*=#!pipe r2g pdd*"'
+	echo '"$pddg=#!pipe r2g pdd"'
+	echo 'e cmd.pdd=pddg'
 	;;
-server)
+headless)
+	echo "Headless r2ghidra is WIP"
 	TESTBIN="$2"
 	if [ -z "${TESTBIN}" ]; then
 		echo "Usage: r2g server /path/to/file"
 	else
 		rm -rf Test.*
-		analyzeHeadless . Test.gpr -import ${TESTBIN} -postScript GhidraDecompilerR2.java -deleteProject
+		analyzeHeadless . Test.gpr -import ${TESTBIN} \
+			-postScript GhidraDecompilerR2.java -deleteProject
 	fi
-	;;
-client)
-	echo "$2" > r2-input
-	sleep 1
-	cat ghidra-output.r2
 	;;
 dec)
 	TESTBIN=/bin/ls
