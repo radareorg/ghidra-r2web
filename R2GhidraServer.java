@@ -44,7 +44,7 @@ public class R2GhidraServer extends GhidraScript {
 
   static class MyCmdHandler implements HttpHandler {
     private String cmdPdd(String arg) {
-      char rad = arg.charAt(0);
+      char rad = arg.charAt(0); // handle "pdd, pdd*, .."
       Function f = ghidra.getFunctionAt(ghidra.currentAddress);
       try {
         return ghidra.decompile(f, rad);
@@ -75,8 +75,8 @@ public class R2GhidraServer extends GhidraScript {
       int tmpAddr = cmd.indexOf('@');
       if (tmpAddr != -1) {
         Address origAddress = ghidra.currentAddress;
-        int dec = Integer.parseInt(cmd.substring(tmpAddr + 1));
-        String addr = "0x" + Integer.toHexString(dec);
+        long dec = Long.parseLong(cmd.substring(tmpAddr + 1));
+        String addr = "0x" + Long.toHexString(dec);
         ghidra.currentAddress = ghidra.parseAddress(addr);
         ghidra.goTo(ghidra.currentAddress);
         cmd = cmd.substring(0, tmpAddr - 1);
@@ -125,7 +125,7 @@ public class R2GhidraServer extends GhidraScript {
               break;
             case '8':
               return cmdPrint8(cmd.substring(2).trim());
-            case 'd':
+            case 'd': // "pdd"
               return cmdPdd(cmd.substring(2).trim()); 
               // TODO
           }
