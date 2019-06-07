@@ -2,6 +2,9 @@ FCNADDR=1000011e8
 TESTBIN=$(shell pwd)/test/ls
 
 all:
+	@echo Run make install
+
+oops:
 	analyzeHeadless . Test.gpr -import $(TESTBIN) -postScript GhidraDecompilerR2.java $(FCNADDR) -deleteProject
 	r2 -caf -i ghidra-output.r2 $(TESTBIN)
 
