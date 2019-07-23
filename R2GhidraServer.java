@@ -97,6 +97,7 @@ public class R2GhidraServer extends GhidraScript {
       msg.append("Cd            - define a dword in the current address\n");
       msg.append("aa            - analyze all the program\n");
       msg.append("af            - analyze function in current address\n");
+      msg.append("afi           - get current function information\n");
       msg.append("afl           - list all functions analyzed by Ghidra\n");
       msg.append("px            - print Hexdump\n");
       msg.append("pdd           - print decompilation of current function\n");
@@ -157,11 +158,31 @@ public class R2GhidraServer extends GhidraScript {
           if (cmd.equals("aa")) {
             Program program = ghidra.getCurrentProgram();
             ghidra.analyzeAll(program);
-          } else if (cmd.equals("af")) {
-            Address addr = ghidra.currentAddress;
-            // ghidra.addEntrypoint(addr);
-            ghidra.disassemble(addr);
-            ghidra.createFunction(addr, "ghidra." + addr.toString());
+          } else if (cmd.equals("afi")) {
+            try {
+              Function f = ghidra.getFunctionAt(ghidra.currentAddress);
+              StringBuffer sb = new StringBuffer();
+              sb.append("name: " + f.getName() + "\n");
+              sb.append("addr: " + f.getEntryPoint().toString() + "\n");
+              sb.append("frame: " + f.getStackPurgeSize() + "\n");
+              for (Parameter p : f.getParameters()) {
+                sb.append("arg: " + p.toString() + "\n");
+              }
+              sb.append("sig: " + f.getSignature() + "\n");
+              sb.append("ret: " + f.getReturn().toString() + "\n");
+              for (Variable p : f.getLocalVariables()) {
+                sb.append("var: " + p.toString() + "\n");
+              }
+              sb.append("noreturn: " + f.hasNoReturn() + "\n");
+              sb.append("vararg: " + f.hasVarArgs() + "\n");
+              sb.append("inline: " + f.isInline() + "\n");
+              sb.append("thunk: " + f.isThunk() + "\n");
+              sb.append("external: " + f.isExternal() + "\n");
+              sb.append("global: " + f.isGlobal() + "\n");
+              return sb.toString();
+            } catch (Exception e) {
+              return e.toString();
+            }
           } else if (cmd.startsWith("afl")) {
             boolean rad = cmd.indexOf("*") != -1;
             Function f = ghidra.getFirstFunction();
@@ -176,7 +197,14 @@ public class R2GhidraServer extends GhidraScript {
             }
             return sb.toString();
           } else if (cmd.equals("af")) {
+            Address addr = ghidra.currentAddress;
+            // ghidra.addEntrypoint(addr);
+            ghidra.disassemble(addr);
+            ghidra.createFunction(addr, "ghidra." + addr.toString());
             return cmdAf(cmd);
+          } else if (cmd.startsWith("af-")) {
+            ghidra.removeFunctionAt(ghidra.currentAddress);
+            return "";
           }
           return "See afl";
         case '?':
