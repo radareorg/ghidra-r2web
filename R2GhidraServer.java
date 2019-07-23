@@ -34,6 +34,14 @@ public class R2GhidraServer extends GhidraScript {
   static R2GhidraServer ghidra = null;
   static HttpServer server = null;
   static int blocksize = 128;
+    private static String hexAddress(Address addr) {
+      return "0x" + String.format("%1$08x", addr.getUnsignedOffset());
+    }
+
+    private static String hexAddress(Long addr) {
+      return "0x" + String.format("%1$08x",addr);
+    }
+
 
   static class MyRootHandler implements HttpHandler {
     public void handle(HttpExchange t) throws IOException {
@@ -74,7 +82,8 @@ public class R2GhidraServer extends GhidraScript {
 
     private String cmdPdd(String arg) {
       char rad = (arg.indexOf("*") != -1) ? '*' : ' ';
-      Function f = ghidra.getFunctionAt(ghidra.currentAddress);
+      // Function f = ghidra.getFunctionAt(ghidra.currentAddress);
+      Function f = ghidra.getFunctionContaining(ghidra.currentAddress);
       try {
         return ghidra.decompile(f, rad);
       } catch (Exception e) {
@@ -191,7 +200,7 @@ public class R2GhidraServer extends GhidraScript {
               if (rad) {
                 sb.append("f ghi." + f.getName() + " 1 0x" + f.getEntryPoint() + "\n");
               } else {
-                sb.append("0x" + f.getEntryPoint() + "  " + f.getName() + "\n");
+                sb.append(hexAddress(f.getEntryPoint()) + "  " + f.getName() + "\n");
               }
               f = ghidra.getFunctionAfter(f);
             }
@@ -221,7 +230,7 @@ public class R2GhidraServer extends GhidraScript {
                 if (at == null) {
                   at = ghidra.currentAddress;
                 }
-                return "0x" + at.getPhysicalAddress() + "\n";
+                return hexAddress(at.getPhysicalAddress()) + "\n";
             }
           }
           return showUsage();
@@ -293,7 +302,7 @@ public class R2GhidraServer extends GhidraScript {
             ghidra.goTo(ghidra.parseAddress(cmd.substring(2)));
             return "";
           }
-          return "0x" + ghidra.currentAddress.toString() + "\n";
+          return hexAddress(ghidra.currentAddress) + "\n";
         case 'p':
           if (cmd.length() > 1) {
             switch (cmd.charAt(1)) {
@@ -470,7 +479,7 @@ public class R2GhidraServer extends GhidraScript {
           String msg = String.format("           %s\n", codeline);
           sb.append(msg);
         } else {
-          String msg = String.format("0x%-8x %s\n", minAddress, codeline);
+          String msg = hexAddress(minAddress) + " " + codeline + "\n";
           sb.append(msg);
         }
       }
