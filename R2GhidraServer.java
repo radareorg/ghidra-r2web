@@ -83,7 +83,26 @@ public class R2GhidraServer extends GhidraScript {
     }
 
     private String showUsage() {
-      return "Usage: .\\afl .\\i* \\pdd\n";
+      StringBuffer msg = new StringBuffer("Usage: [r2ghidra-command .. args]\n");
+      msg.append("?             - show this help message\n");
+      msg.append("?V            - show Ghidra Version information\n");
+      msg.append("?p [vaddr]    - get physical address for given virtual address\n");
+      msg.append("f [name]      - set flag to the current offset inside ghidra (label)\n");
+      msg.append("i             - show program information (arch/bits/hash..)\n");
+      msg.append("/ [string]    - search for given string (which may contain \\x hex)\n");
+      msg.append("s ([addr])    - check or set current seek address\n");
+      msg.append("b ([bsize])   - get or set blocksize\n");
+      msg.append("CC [comment]  - add or replace comment in current offset\n");
+      msg.append("Cs            - define a string in the current address\n");
+      msg.append("Cd            - define a dword in the current address\n");
+      msg.append("aa            - analyze all the program\n");
+      msg.append("af            - analyze function in current address\n");
+      msg.append("afl           - list all functions analyzed by Ghidra\n");
+      msg.append("px            - print Hexdump\n");
+      msg.append("pdd           - print decompilation of current function\n");
+      msg.append("pdd*          - decompile current function as comments for r2\n");
+      msg.append("q             - quit the r2ghidra-server script\n");
+      return msg.toString();
     }
 
     private String cmdPrint8(String arg) {
@@ -161,19 +180,21 @@ public class R2GhidraServer extends GhidraScript {
           }
           return "See afl";
         case '?':
-          switch (cmd.charAt(1)) {
-            case 'V':
-              return ghidra.getGhidraVersion() + "\n";
-            case 'p':
-              Address at = null;
-              try {
-                at = ghidra.currentAddress.getAddress(cmd.substring(2));
-              } catch (Exception e) {
-              }
-              if (at == null) {
-                at = ghidra.currentAddress;
-              }
-              return "0x" + at.getPhysicalAddress() + "\n";
+          if (cmd.length() > 1) {
+            switch (cmd.charAt(1)) {
+              case 'V':
+                return ghidra.getGhidraVersion() + "\n";
+              case 'p':
+                Address at = null;
+                try {
+                  at = ghidra.currentAddress.getAddress(cmd.substring(2));
+                } catch (Exception e) {
+                }
+                if (at == null) {
+                  at = ghidra.currentAddress;
+                }
+                return "0x" + at.getPhysicalAddress() + "\n";
+            }
           }
           return showUsage();
         case 'f':
@@ -281,6 +302,8 @@ public class R2GhidraServer extends GhidraScript {
           server.stop(0);
           server = null;
           return "quit";
+        default:
+          return showUsage();
       }
       return cmd;
     }
