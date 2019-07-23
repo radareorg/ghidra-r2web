@@ -3,11 +3,33 @@ r2ghidra
 
 This repository contains integration scripts to interop Ghidra and radare2.
 
-Usage:
-------
+The r2ghidraserver is a Ghidra plugin that starts an http server to let r2 talk to it.
 
-* make install to get the R2GhidraServer.java installed in the ghidra place
+Features
+--------
+
+* Decompile current function
+* Load the decompiler output as comments
+* List functions found by Ghidra ('afl')
+* List symbols 'is' from Ghidra bin parser
+* Import comments from Ghidra into r2
+* Read/Write ghidra's session remote memory contents
+
+Usage
+-----
+
+* Install Ghidra using r2pm
+
+	$ r2pm -i ghidra
+
+* Symlink the R2GhidraServer.java into the ghidra plugins directory
+
+	$ make install
+
 * Start ghidra and doubleclick the script to get the http server
+
+	$ r2pm -r ghidraRun
+
 * Attach r2 to the ghidra session
 
 	$ r2 r2web://localhost:8002/cmd
@@ -17,14 +39,15 @@ Usage:
 	* \pdd
 	* !curl http://localhost:8002/cmd/p8%2080
 
-Other commands may be interesting to have:
+Available commands (via curl or r2web)
 
-	$ curl http://localhost:8002/cmd/afl
-	$ curl http://localhost:8002/cmd/pdd
-	$ curl http://localhost:8002/cmd/pdd*
-	...
-
-I will add curl dependency into r2 to get this to work.
-
+* afl
+* i
+* is
+* CC
+* s
+* px, p8, pd
+* b - blocksize
+* q
 
 --pancake

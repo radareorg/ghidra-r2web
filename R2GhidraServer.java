@@ -181,22 +181,27 @@ public class R2GhidraServer extends GhidraScript {
           res += "# md5 " + program.getExecutableMD5() + "\n";
           res += "# exe " + program.getExecutablePath() + "\n";
           return res;
-        case 'C': // "s"
+        case 'C': // "C"
           return allComments();
         case 's': // "s"
           if (cmd.length() > 1 && cmd.charAt(1) == ' ') {
             ghidra.goTo(ghidra.parseAddress(cmd.substring(2)));
+            return "";
           }
           return "0x" + ghidra.currentAddress.toString() + "\n";
         case 'p':
-          switch (cmd.charAt(1)) {
-            case 'x': // "px"
-              break;
-            case '8': // "p8"
-              return cmdPrint8(cmd.substring(2).trim());
-            case 'd': // "pdd" and "pdd*"
-              return cmdPdd(cmd.substring(2).trim());
-              // TODO
+          if (cmd.length() > 1) {
+            switch (cmd.charAt(1)) {
+              case 'x': // "px"
+                break;
+              case '8': // "p8"
+                return cmdPrint8(cmd.substring(2).trim());
+              case 'd': // "pdd" and "pdd*"
+                return cmdPdd(cmd.substring(2).trim());
+                // TODO
+              default:
+                return "Usage: p[x8d]";
+            }
           }
           break;
         case 'x': // "x"
@@ -211,6 +216,10 @@ public class R2GhidraServer extends GhidraScript {
           }
           return sb.toString() + "\n";
         case 'b':
+          if (cmd.length() > 1 && cmd.charAt(1) == ' ') {
+            blocksize = Integer.parseInt(cmd.substring(2));
+            return "";
+          }
           return "" + blocksize + "\n";
         case 'q':
           server.stop(0);
@@ -278,9 +287,11 @@ public class R2GhidraServer extends GhidraScript {
 
   public void run() throws Exception {
     this.ghidra = this;
-    int port = 9191;
     String portString = askString("r2web HTTP Server", "Port", "9191");
-    port = Integer.parseInt(portString);
+    int port = Integer.parseInt(portString);
+    if (port < 1) {
+      port = 9191;
+    }
     // port = askInt("r2ghidra webserver", "Port number");
     server = HttpServer.create(new InetSocketAddress(port), 0);
     server.createContext("/", new MyRootHandler());
