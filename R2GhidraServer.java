@@ -119,8 +119,31 @@ public class R2GhidraServer extends GhidraScript {
         return "Unknown r2ghidra command.";
       }
       switch (cmd.charAt(0)) {
+        case '/':
+          if (cmd.length() > 1) {
+            switch (cmd.charAt(1)) {
+              case ' ':
+                Address[] res = ghidra.findBytes(ghidra.currentAddress, cmd.substring(2), 9999);
+                String out = "";
+                for (Address a : res) {
+                  out += a.toString() + "\n";
+                }
+                return out;
+              case 'x':
+                return "Usage: / \\xAA\\xBB instead";
+            }
+          }
+          return "Usage: '/ string' or '/x [hex]'";
         case 'a':
-          if (cmd.startsWith("afl")) {
+          if (cmd.equals("aa")) {
+            Program program = ghidra.getCurrentProgram();
+            ghidra.analyzeAll(program);
+          } else if (cmd.equals("af")) {
+            Address addr = ghidra.currentAddress;
+            // ghidra.addEntrypoint(addr);
+            ghidra.disassemble(addr);
+            ghidra.createFunction(addr, "ghidra." + addr.toString());
+          } else if (cmd.startsWith("afl")) {
             boolean rad = cmd.indexOf("*") != -1;
             Function f = ghidra.getFirstFunction();
             StringBuffer sb = new StringBuffer();
@@ -153,6 +176,17 @@ public class R2GhidraServer extends GhidraScript {
               return "0x" + at.getPhysicalAddress() + "\n";
           }
           return showUsage();
+        case 'f':
+          if (cmd.length() > 1 && cmd.charAt(1) == ' ') {
+            try {
+              String comment = cmd.substring(2);
+              ghidra.createLabel(ghidra.currentAddress, comment, false);
+            } catch (Exception e) {
+              return e.toString();
+            }
+            return "";
+          }
+          return "";
         case 'i':
           // "is"
           // SymbolTable  program.getSymbolTable()
@@ -182,7 +216,29 @@ public class R2GhidraServer extends GhidraScript {
           res += "# exe " + program.getExecutablePath() + "\n";
           return res;
         case 'C': // "C"
-          return allComments();
+          try {
+            if (cmd.length() > 1) {
+              switch (cmd.charAt(1)) {
+                case 's': // "Cs"
+                  ghidra.createAsciiString(ghidra.currentAddress);
+                  break;
+                case 'd': // "Cd"
+                  ghidra.createWord(ghidra.currentAddress);
+                  break;
+                case 'C': // "CC"
+                  if (cmd.length() > 2 && cmd.charAt(2) == ' ') {
+                    ghidra.println("Set comment");
+                    ghidra.setPreComment(ghidra.currentAddress, cmd.substring(3));
+                    return "";
+                  }
+                  ghidra.println("List comment");
+                  return allComments();
+              }
+            }
+          } catch (Exception e) {
+            return e.toString();
+          }
+          return "Usage: CC [comment] @ addr";
         case 's': // "s"
           if (cmd.length() > 1 && cmd.charAt(1) == ' ') {
             ghidra.goTo(ghidra.parseAddress(cmd.substring(2)));
