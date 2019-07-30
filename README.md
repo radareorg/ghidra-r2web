@@ -1,9 +1,9 @@
-r2ghidra
-========
+ghidra-r2web
+============
 
 This repository contains integration scripts to interop Ghidra and radare2.
 
-The r2ghidraserver is a Ghidra plugin that starts an http server to let r2 talk to it.
+It's just an Ghidra plugin that starts an http server to let r2 talk to it.
 
 Features
 --------
@@ -45,7 +45,7 @@ Sample session
 ```
 $ r2 r2web://localhost:9191/cmd
 [0x00000000]> \?
-Usage: [r2ghidra-command .. args]
+Usage: [ghidra-r2web-command .. args]
 ?             - show this help message
 ?V            - show Ghidra Version information
 ?p [vaddr]    - get physical address for given virtual address
@@ -64,7 +64,7 @@ afl           - list all functions analyzed by Ghidra
 px            - print Hexdump
 pdd           - print decompilation of current function
 pdd*          - decompile current function as comments for r2
-q             - quit the r2ghidra-server script
+q             - quit the ghidra-r2web script
 [0x00000000]> \?V
 9.0.4
 [0x00000000]>

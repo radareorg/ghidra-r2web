@@ -33,8 +33,8 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Stack;
 
-public class R2GhidraServer extends GhidraScript {
-  static R2GhidraServer ghidra = null;
+public class GhidraR2WebServer extends GhidraScript {
+  static GhidraR2WebServer ghidra = null;
   static HttpServer server = null;
   static int blocksize = 128;
 
@@ -158,7 +158,7 @@ public class R2GhidraServer extends GhidraScript {
     }
 
     private String showUsage() {
-      StringBuffer msg = new StringBuffer("Usage: [r2ghidra-command .. args]\n");
+      StringBuffer msg = new StringBuffer("Usage: [ghidra-r2web-command .. args]\n");
       msg.append("?             - show this help message\n");
       msg.append("?V            - show Ghidra Version information\n");
       msg.append("?p [vaddr]    - get physical address for given virtual address\n");
@@ -178,7 +178,7 @@ public class R2GhidraServer extends GhidraScript {
       msg.append("px            - print Hexdump\n");
       msg.append("pdd           - print decompilation of current function\n");
       msg.append("pdd*          - decompile current function as comments for r2\n");
-      msg.append("q             - quit the r2ghidra-server script\n");
+      msg.append("q             - quit the ghidra-r2web-server script\n");
       return msg.toString();
     }
 
@@ -212,7 +212,7 @@ public class R2GhidraServer extends GhidraScript {
       }
       ghidra.println("COMMAND: " + cmd);
       if (cmd.length() == 0) {
-        return "Unknown r2ghidra command.";
+        return "Unknown ghidra-r2web-server command.";
       }
       switch (cmd.charAt(0)) {
         case '/':
@@ -482,7 +482,7 @@ public class R2GhidraServer extends GhidraScript {
     if (port < 1) {
       port = 9191;
     }
-    // port = askInt("r2ghidra webserver", "Port number");
+    // port = askInt("ghidra r2web server", "Port number");
     server = HttpServer.create(new InetSocketAddress(port), 0);
     server.createContext("/", new MyRootHandler());
     server.createContext("/cmd", new MyCmdHandler());
@@ -491,7 +491,7 @@ public class R2GhidraServer extends GhidraScript {
     println("Run this line to stop the server: 'curl http://localhost:" + port + "/cmd/q'");
     boolean res =
         askYesNo(
-            "Do you want to stop the r2ghidra webserver?",
+            "Do you want to stop the ghidra-r2web-server webserver?",
             "$ r2 r2web://localhost:"
                 + port
                 + "/cmd/\nPress yes to stop the server.\nPress 'no' to continue in background (EXPERIMENTAL)");
