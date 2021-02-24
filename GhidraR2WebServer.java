@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-//Script to compute and print the cyclomatic complexity of the current function.
+//Script to tap into Ghidra and control its commands through radare2 webserver.
 //@category Functions
 //
 // Starts an http server to let r2 talk with us
