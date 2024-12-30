@@ -10,7 +10,8 @@ import com.sun.net.httpserver.HttpHandler;
 
 public class GhidraR2WebCmdHandler implements HttpHandler {
 	
-	static List<R2CmdHandler> handlers = Arrays.asList(new R2HelpCmd(), new R2VersionCmd(), new R2SeekCmd(), new R2PddCmd());
+	//TODO This should be a tree/forest!
+	static List<R2CmdHandler> handlers = Arrays.asList(new R2HelpCmd(), new R2VersionCmd(), new R2SeekCmd(), new R2PrintCmd());
 
 	void sendResponse(HttpExchange exchange, byte[] response) throws IOException {
 		exchange.sendResponseHeaders(200, response.length);

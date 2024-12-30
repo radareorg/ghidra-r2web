@@ -9,4 +9,5 @@ import ghidra.program.model.address.Address;
 public class GhidraR2State {
 	public static Address r2Seek=null;
 	public static FlatProgramAPI api=null;
+	public static int blockSize=128;
 }

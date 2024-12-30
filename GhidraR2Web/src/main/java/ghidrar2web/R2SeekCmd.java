@@ -16,7 +16,7 @@ public class R2SeekCmd extends R2CmdHandler {
 			GhidraR2State.r2Seek=GhidraR2State.api.toAddr(parts[1]);
 		}
 		
-		return "0x"+GhidraR2State.r2Seek.toString();
+		return hexAddress(GhidraR2State.r2Seek)+"\n";
 	}
 
 }
