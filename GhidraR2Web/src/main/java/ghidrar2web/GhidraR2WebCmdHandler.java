@@ -9,7 +9,8 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 public class GhidraR2WebCmdHandler implements HttpHandler {
-	static List<R2CmdHandler> handlers = Arrays.asList(new R2HelpCmd(), new R2VersionCmd());
+	
+	static List<R2CmdHandler> handlers = Arrays.asList(new R2HelpCmd(), new R2VersionCmd(), new R2SeekCmd(), new R2PddCmd());
 
 	void sendResponse(HttpExchange exchange, byte[] response) throws IOException {
 		exchange.sendResponseHeaders(200, response.length);
@@ -34,7 +35,7 @@ public class GhidraR2WebCmdHandler implements HttpHandler {
 		}
 		if (cmd != null) {
 			for (R2CmdHandler h : handlers) {
-				if (h.canHandle(cmd.charAt(0))) {
+				if (h.canHandle(cmd)) {
 					byte[] response = h.handle(cmd).getBytes();
 					sendResponse(exchange, response);
 					return;

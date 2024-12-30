@@ -33,6 +33,8 @@ import ghidra.app.plugin.PluginCategoryNames;
 import ghidra.app.plugin.ProgramPlugin;
 import ghidra.framework.plugintool.*;
 import ghidra.framework.plugintool.util.PluginStatus;
+import ghidra.program.flatapi.FlatProgramAPI;
+import ghidra.program.model.listing.Program;
 import ghidra.util.HelpLocation;
 import ghidra.util.Msg;
 import resources.Icons;
@@ -78,6 +80,12 @@ public class GhidraR2WebPlugin extends ProgramPlugin {
 
 		// Acquire services if necessary
 	}
+	
+	@Override
+	protected void programOpened(Program program) {
+		GhidraR2State.api = new FlatProgramAPI(program);
+		GhidraR2State.r2Seek = GhidraR2State.api.toAddr(0);
+	}
 
 	// If provider is desired, it is recommended to move it to its own file
 	private static class MyProvider extends ComponentProvider {
@@ -98,9 +106,11 @@ public class GhidraR2WebPlugin extends ProgramPlugin {
 				public void actionPerformed(ActionContext context) {
 					try {
 						webServer=GhidraR2WebServer.getInstance(9191);
+						OkDialog.showInfo("R2Web", "R2Web server started.\n\nGet the best of both worlds!");
 					}catch(IOException ioe) {
 						OkDialog.showError("R2Web Error", ioe.getMessage());
 					}
+					
 				}
 			};
 			startAction.setMenuBarData(new MenuData(
