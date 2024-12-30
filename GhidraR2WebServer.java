@@ -544,8 +544,8 @@ public class GhidraR2WebServer extends GhidraScript {
     println(df.getC());
 
     // Print lines prepend with addresses
-    PrettyPrinter pp = new PrettyPrinter(f, dr.getCCodeMarkup());
-    ArrayList<ClangLine> lines = pp.getLines();
+    PrettyPrinter pp = new PrettyPrinter(f, dr.getCCodeMarkup(), new IdentityNameTransformer());
+    ArrayList<ClangLine> lines = new ArrayList<ClangLine>(pp.getLines());
 
     for (ClangLine line : lines) {
       long minAddress = Long.MAX_VALUE;
