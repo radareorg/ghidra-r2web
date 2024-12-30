@@ -36,7 +36,7 @@ Usage
 
 * Run commands into the ghidra server from r2 or the shell
 
-	* \pdd
+	* :pdd
 	* !curl http://localhost:8002/cmd/p8%2080
 
 Sample session
@@ -44,7 +44,7 @@ Sample session
 
 ```
 $ r2 r2web://localhost:9191/cmd
-[0x00000000]> \?
+[0x00000000]> :?
 Usage: [ghidra-r2web-command .. args]
 ?             - show this help message
 ?V            - show Ghidra Version information

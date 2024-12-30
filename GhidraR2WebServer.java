@@ -167,10 +167,17 @@ public class GhidraR2WebServer extends GhidraScript {
 
     private String cmdPdd(String arg) {
       char rad = (arg.indexOf("*") != -1) ? '*' : ' ';
+      Integer len = 0;
+      try{
+        len = Integer.parseInt(arg.split(" ")[1]);
+      }catch(Exception e){ } // TODO remove Pokemon handler
+        
       // Function f = ghidra.getFunctionAt(ghidra.currentAddress);
-      Function f = ghidra.getFunctionContaining(ghidra.currentAddress);
-      try {
+      try{
+        Function f = ghidra.getFunctionContaining(ghidra.currentAddress);
         return ghidra.decompile(f, rad);
+      }catch(MemoryAccessException mae){
+        return "FF".repeat(len);
       } catch (Exception e) {
         return e.toString() + "\n";
       }
@@ -220,16 +227,19 @@ public class GhidraR2WebServer extends GhidraScript {
     }
 
     String runCommand(String cmd) {
+      ghidra.println("ORIGINAL COMMAND: " + cmd);
       int tmpAddr = cmd.indexOf('@');
       if (tmpAddr != -1) {
-        Address origAddress = ghidra.currentAddress;
-        long dec = Long.decode(cmd.substring(tmpAddr + 1));
-        String addr = "0x" + Long.toHexString(dec);
-        ghidra.currentAddress = ghidra.parseAddress(addr);
-        ghidra.goTo(ghidra.currentAddress);
-        cmd = cmd.substring(0, tmpAddr);
+          Address origAddress = ghidra.currentAddress;
+          long dec = Long.decode(cmd.substring(tmpAddr + 1));
+          String addr = "0x" + Long.toHexString(dec);
+          ghidra.currentAddress = ghidra.parseAddress(addr);
+          ghidra.goTo(ghidra.currentAddress);
+          cmd = cmd.substring(0, tmpAddr);
+          ghidra.println("ADDRESS: " + addr +" = "+ ghidra.currentAddress.toString());
       }
       ghidra.println("COMMAND: " + cmd);
+      
       if (cmd.length() == 0) {
         return "Unknown ghidra-r2web-server command.";
       }
@@ -392,8 +402,9 @@ public class GhidraR2WebServer extends GhidraScript {
           return "Usage: CC [comment] @ addr";
         case 's': // "s"
           if (cmd.length() > 1 && cmd.charAt(1) == ' ') {
-            ghidra.goTo(ghidra.parseAddress(cmd.substring(2)));
-            return "";
+            Address seekAddr= ghidra.parseAddress(cmd.substring(2));
+            ghidra.goTo(seekAddr); // goTo doesn't update currentAddress!
+            ghidra.currentAddress=seekAddr;
           }
           return hexAddress(ghidra.currentAddress) + "\n";
         case 'p':
