@@ -9,9 +9,20 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 public class GhidraR2WebCmdHandler implements HttpHandler {
-	
-	//TODO This should be a tree/forest!
-	static List<R2CmdHandler> handlers = Arrays.asList(new R2HelpCmd(), new R2VersionCmd(), new R2SeekCmd(), new R2PrintCmd());
+
+	// TODO This should be a tree/forest!
+	static List<R2CmdHandler> handlers = 
+			Arrays.asList(	new R2HelpCmd(), 
+							new R2VersionCmd(), 
+							new R2SeekCmd(),
+							new R2PrintCmd(), 
+							new R2InfoCmd(), 
+							new R2FlagCmd(), 
+							new R2StringSearchCmd(), 
+							new R2BlocksizeCmd(),
+							new R2CreateCmd(),
+							new R2AnalyzeCmd()
+						);
 
 	void sendResponse(HttpExchange exchange, byte[] response) throws IOException {
 		exchange.sendResponseHeaders(200, response.length);
@@ -19,7 +30,7 @@ public class GhidraR2WebCmdHandler implements HttpHandler {
 		os.write(response);
 		os.close();
 	}
-	
+
 	void sendErrorResponse(int status, HttpExchange exchange, byte[] response) throws IOException {
 		exchange.sendResponseHeaders(status, response.length);
 		OutputStream os = exchange.getResponseBody();
@@ -42,7 +53,7 @@ public class GhidraR2WebCmdHandler implements HttpHandler {
 					return;
 				}
 			}
-		}else {
+		} else {
 			sendErrorResponse(400, exchange, "Empty request".getBytes());
 		}
 		sendErrorResponse(500, exchange, "Not implemented".getBytes());

@@ -1,17 +1,15 @@
 package ghidrar2web;
 
 public class R2P8Cmd extends R2CmdHandler {
-
+	@SuppressWarnings("hiding")
+	protected int cmdPos=1;
+	
 	@Override
 	public boolean canHandle(char cmdChar) {
-		// TODO Auto-generated method stub
+		if (cmdChar == '8') return true;
 		return false;
 	}
-	public boolean canHandle(String cmd) {
-		if (cmd.startsWith("p8")) return true;
-		return false;
-	}
-	
+
     private String cmdPrint8(String arg) {
         int len = Integer.parseInt(arg);
         if (len < 1) {

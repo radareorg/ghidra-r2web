@@ -6,23 +6,19 @@ import java.util.Base64;
 import ghidra.app.decompiler.ClangLine;
 import ghidra.app.decompiler.DecompInterface;
 import ghidra.app.decompiler.DecompileResults;
-import ghidra.app.decompiler.DecompiledFunction;
+// import ghidra.app.decompiler.DecompiledFunction;
 import ghidra.app.decompiler.PrettyPrinter;
 import ghidra.program.model.listing.Function;
 import ghidra.program.model.mem.MemoryAccessException;
 import ghidra.program.model.symbol.IdentityNameTransformer;
 
 public class R2PddCmd extends R2CmdHandler {
-
+	@SuppressWarnings("hiding")
+	protected int cmdPos=1;
+	
 	@Override
 	public boolean canHandle(char cmdChar) {
-		return false;
-	}
-
-	@Override
-	public boolean canHandle(String cmd) {
-		if (cmd.startsWith("pdd"))
-			return true;
+		if (cmdChar=='d') return true;
 		return false;
 	}
 
@@ -49,7 +45,7 @@ public class R2PddCmd extends R2CmdHandler {
 		// println("Decompilation completed: " + dr.decompileCompleted()); // DEBUG
 
 		
-		DecompiledFunction df = dr.getDecompiledFunction();
+		// DecompiledFunction df = dr.getDecompiledFunction();
 		// println(df.getC());
 
 		// Print lines prepend with addresses

@@ -15,7 +15,6 @@
  */
 package ghidrar2web;
 
-import java.awt.BorderLayout;
 import java.io.IOException;
 
 import javax.swing.*;
@@ -24,21 +23,18 @@ import docking.ActionContext;
 import docking.ComponentProvider;
 import docking.action.DockingAction;
 import docking.action.MenuData;
-import docking.action.ToolBarData;
 import docking.tool.ToolConstants;
 import docking.widgets.OkDialog;
 import docking.widgets.OptionDialog;
 import ghidra.app.CorePluginPackage;
-import ghidra.app.ExamplesPluginPackage;
 import ghidra.app.plugin.PluginCategoryNames;
 import ghidra.app.plugin.ProgramPlugin;
+import ghidra.app.services.BlockModelService;
 import ghidra.framework.plugintool.*;
 import ghidra.framework.plugintool.util.PluginStatus;
 import ghidra.program.flatapi.FlatProgramAPI;
 import ghidra.program.model.listing.Program;
 import ghidra.util.HelpLocation;
-import ghidra.util.Msg;
-import resources.Icons;
 
 /**
  * Provide class-level documentation that describes what this plugin does.
@@ -78,8 +74,9 @@ public class GhidraR2WebPlugin extends ProgramPlugin {
 	@Override
 	public void init() {
 		super.init();
-
 		// Acquire services if necessary
+		GhidraR2State.blockModelService = this.getTool().getService(BlockModelService.class);
+
 	}
 	
 	@Override
