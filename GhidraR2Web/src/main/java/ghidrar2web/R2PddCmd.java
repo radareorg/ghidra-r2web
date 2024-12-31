@@ -13,9 +13,12 @@ import ghidra.program.model.mem.MemoryAccessException;
 import ghidra.program.model.symbol.IdentityNameTransformer;
 
 public class R2PddCmd extends R2CmdHandler {
-	@SuppressWarnings("hiding")
-	protected int cmdPos=1;
 	
+	
+	public R2PddCmd(int i) {
+		cmdPos=i;
+	}
+
 	@Override
 	public boolean canHandle(char cmdChar) {
 		if (cmdChar=='d') return true;

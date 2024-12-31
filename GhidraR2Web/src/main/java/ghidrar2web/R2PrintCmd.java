@@ -4,9 +4,17 @@ import java.util.Arrays;
 import java.util.List;
 
 public class R2PrintCmd extends R2CmdHandler {
-	List<R2CmdHandler> handlers = Arrays.asList(new R2PddCmd(), new R2P8Cmd(), new R2PrintHexCmd());
+	List<R2CmdHandler> handlers ;
+	R2PrintCmd(){
+		this(0);
+	}
+	public R2PrintCmd(int i) {
+		cmdPos=i;
+		handlers = Arrays.asList(new R2PddCmd(cmdPos+1), new R2P8Cmd(cmdPos+1), new R2PrintHexCmd(cmdPos+1));
+	}
 	@Override
 	public boolean canHandle(char cmdChar) {
+		if (cmdChar == 'p') return true;
 		return false;
 	}
 	
@@ -18,16 +26,7 @@ public class R2PrintCmd extends R2CmdHandler {
 		}
 		return null;
 	}
-	@Override
-	public boolean canHandle(String cmd) {
-		if (cmd.charAt(0) != 'p') return false;
-		R2CmdHandler h = findHandler(cmd);
-		if (h == null) {
-			return false;
-		}
-		return true;
-	}
-
+	
 	@Override
 	public String handle(String cmd) {
 		R2CmdHandler h = findHandler(cmd);

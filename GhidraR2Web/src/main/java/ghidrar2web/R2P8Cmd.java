@@ -1,9 +1,11 @@
 package ghidrar2web;
 
 public class R2P8Cmd extends R2CmdHandler {
-	@SuppressWarnings("hiding")
-	protected int cmdPos=1;
 	
+	public R2P8Cmd(int i) {
+		cmdPos=i;
+	}
+
 	@Override
 	public boolean canHandle(char cmdChar) {
 		if (cmdChar == '8') return true;
