@@ -9,8 +9,7 @@ import com.sun.net.httpserver.HttpServer;
 
 
 public class GhidraR2WebServer {
-	HttpServer server;
-	static GhidraR2WebServer instance;
+	static HttpServer server;
 
 	static class MyRootHandler implements HttpHandler {
 		public void handle(HttpExchange t) throws IOException {
@@ -23,24 +22,21 @@ public class GhidraR2WebServer {
 
 		}
 	}
-	
-	public static GhidraR2WebServer getInstance(int port) throws IOException {
-		if (instance == null) {
-			instance = new GhidraR2WebServer(port);
-		}
-		return instance;
-	}
 
-	GhidraR2WebServer(int port) throws IOException {
+	public static void start(int port) throws IOException {
+		stop();
 		server = HttpServer.create(new InetSocketAddress(port), 0);
 		server.createContext("/", new MyRootHandler());
 		server.createContext("/cmd", new GhidraR2WebCmdHandler());
 		server.setExecutor(null); // creates a default executor
-		server.start();
-	}
-
-	public void stop() {
-		this.server.stop(0);
-		this.server = null;
+		server.start();	
+		
+	} 
+	
+	public static void stop() {
+		if (server != null) {
+			server.stop(0);
+			server = null;
+		}
 	}
 }

@@ -27,6 +27,7 @@ import docking.action.MenuData;
 import docking.action.ToolBarData;
 import docking.tool.ToolConstants;
 import docking.widgets.OkDialog;
+import docking.widgets.OptionDialog;
 import ghidra.app.CorePluginPackage;
 import ghidra.app.ExamplesPluginPackage;
 import ghidra.app.plugin.PluginCategoryNames;
@@ -92,7 +93,7 @@ public class GhidraR2WebPlugin extends ProgramPlugin {
 
 		private JPanel panel;
 		private DockingAction startAction;
-		static GhidraR2WebServer webServer;
+		private DockingAction stopAction;
 
 		public MyProvider(Plugin plugin, String owner) {
 			super(plugin.getTool(), owner, owner);
@@ -105,14 +106,17 @@ public class GhidraR2WebPlugin extends ProgramPlugin {
 				@Override
 				public void actionPerformed(ActionContext context) {
 					try {
-						webServer=GhidraR2WebServer.getInstance(9191);
-						OkDialog.showInfo("R2Web", "R2Web server started.\n\nGet the best of both worlds!");
+						String strPort=OptionDialog.showInputSingleLineDialog(null, "R2Web", "Server port:", "9191");
+						Integer intPort=Integer.parseInt(strPort);
+						GhidraR2WebServer.start(intPort.intValue());
+						OkDialog.showInfo("R2Web", "R2Web server started on port "+strPort+".\n\nGet the best of both worlds!");
 					}catch(IOException ioe) {
 						OkDialog.showError("R2Web Error", ioe.getMessage());
 					}
 					
 				}
 			};
+			
 			startAction.setMenuBarData(new MenuData(
 		            new String[] {                      // Menu Path
 		                ToolConstants.MENU_TOOLS,
@@ -124,10 +128,34 @@ public class GhidraR2WebPlugin extends ProgramPlugin {
 		            MenuData.NO_MNEMONIC,               // Mnemonic
 		            "1"                                 // Menu Subgroup
 		        ));
+			
+			stopAction = new DockingAction("R2Web Stop Action", getName()) {
+				@Override
+				public void actionPerformed(ActionContext context) {
+					GhidraR2WebServer.stop();
+					OkDialog.showInfo("R2Web", "R2Web server stopped.");
+					
+				}
+			};
+			
+			stopAction.setMenuBarData(new MenuData(
+		            new String[] {                      // Menu Path
+		                ToolConstants.MENU_TOOLS,
+		                "R2Web",
+		                "Stop R2Web server"
+		            },
+		            null,                               // Icon
+		            "r2web",                      // Menu Group
+		            MenuData.NO_MNEMONIC,               // Mnemonic
+		            "1"                                 // Menu Subgroup
+		        ));
 			//action.setToolBarData(new ToolBarData(Icons.ADD_ICON, null));
 			startAction.setEnabled(true);
 			startAction.markHelpUnnecessary();
+			stopAction.setEnabled(true);
+			stopAction.markHelpUnnecessary();
 			dockingTool.addAction(startAction);
+			dockingTool.addAction(stopAction);
 		}
 
 		@Override
