@@ -29,7 +29,6 @@ import docking.widgets.OptionDialog;
 import ghidra.app.CorePluginPackage;
 import ghidra.app.plugin.PluginCategoryNames;
 import ghidra.app.plugin.ProgramPlugin;
-import ghidra.app.services.BlockModelService;
 import ghidra.framework.plugintool.*;
 import ghidra.framework.plugintool.util.PluginStatus;
 import ghidra.program.flatapi.FlatProgramAPI;
@@ -75,8 +74,6 @@ public class GhidraR2WebPlugin extends ProgramPlugin {
 	public void init() {
 		super.init();
 		// Acquire services if necessary
-		GhidraR2State.blockModelService = this.getTool().getService(BlockModelService.class);
-
 	}
 	
 	@Override

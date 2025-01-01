@@ -30,3 +30,7 @@ Usage
 
 The plugin registers a new menu item under the Tools menu of Ghidra's Code Browser to start/stop the embedded web server. From there you can use r2's connection syntax as described in the original README. 
 
+### Headless
+
+The Python script provided in the `ghidra_scripts` directory intializes the r2web server on port 9191. You should provide this script as `-postScript` when launching headless Ghidra.
+

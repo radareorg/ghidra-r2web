@@ -6,6 +6,7 @@ import java.util.Stack;
 import ghidra.app.services.BlockModelService;
 import ghidra.program.flatapi.FlatProgramAPI;
 import ghidra.program.model.address.Address;
+import ghidra.program.model.block.BasicBlockModel;
 import ghidra.program.model.block.CodeBlock;
 import ghidra.program.model.block.CodeBlockModel;
 import ghidra.program.model.block.CodeBlockReference;
@@ -42,9 +43,7 @@ public class R2AnalyzeFunctionDummyCmd extends R2CmdHandler {
 		FlatProgramAPI ghidra = GhidraR2State.api;
 		Address currentAddress = GhidraR2State.r2Seek;
 		try {
-			BlockModelService blockModelService = GhidraR2State.blockModelService;
-			// CodeBlockModel cbm = blockModelService.getActiveSubroutineModel();
-			CodeBlockModel cbm = blockModelService.getActiveBlockModel();
+			CodeBlockModel cbm = new BasicBlockModel(ghidra.getCurrentProgram());// blockModelService.getActiveBlockModel();
 			CodeBlock[] blocks = cbm.getCodeBlocksContaining(currentAddress, TaskMonitor.DUMMY);
 			Function f = ghidra.getFunctionContaining(currentAddress);
 			Address faddr = f.getEntryPoint();
