@@ -32,5 +32,9 @@ The plugin registers a new menu item under the Tools menu of Ghidra's Code Brows
 
 ### Headless
 
-The Python script provided in the `ghidra_scripts` directory intializes the r2web server on port 9191. You should provide this script as `-postScript` when launching headless Ghidra.
+The Python script provided in the `ghidra_scripts` directory intializes the r2web server on port 9191 by default. You can change the port by setting the `R2WEB_PORT` environment variable. You should provide this script as `-postScript` when launching headless Ghidra:
+
+```
+./support/analyzeHeadless /path/to/project-dir project-name -process binary_name -postScript /path/to/r2web_headless.py
+```
 
