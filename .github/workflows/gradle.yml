@@ -51,7 +51,7 @@ jobs:
           GhidraR2WebServer.java
           r2g
           README.md
-        name: ghidra-r2web_${{GITHUB_SHA}}
+        name: ghidra-r2web_$GITHUB_SHA
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
