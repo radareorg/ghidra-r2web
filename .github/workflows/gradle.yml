@@ -43,11 +43,16 @@ jobs:
       run: gradle buildExtension
       working-directory: ./GhidraR2Web
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
+    - name: Release 
+      uses: softprops/action-gh-release@v1
       with:
-        path: GhidraR2Web/dist/*.zip
-        if-no-files-found: error
-        retention-days: 1
+        files: |
+          GhidraR2Web/dist/*.zip
+          GhidraR2WebServer.java
+          r2g
+          README.md
+        name: ghidra-r2web_${{GITHUB_SHA}}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
