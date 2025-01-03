@@ -19,7 +19,7 @@ jobs:
 
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: read|write
 
     steps:
     - uses: actions/checkout@v4
