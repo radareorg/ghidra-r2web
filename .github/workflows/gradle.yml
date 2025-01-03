@@ -29,6 +29,8 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
     - uses: er28-0652/setup-ghidra@master
+      with:
+        version: "11.2"
 
     # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
     # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
