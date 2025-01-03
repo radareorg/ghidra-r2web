@@ -33,7 +33,6 @@ public class R2P8Cmd extends R2CmdHandler {
 
 	@Override
 	public String handle(String cmd) {
-		// TODO Auto-generated method stub
 		String[] parts = cmd.split(" ");
 		String arg = "-1";
 		if (parts.length > 1) {

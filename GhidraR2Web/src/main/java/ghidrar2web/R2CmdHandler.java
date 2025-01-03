@@ -7,12 +7,6 @@ public abstract class R2CmdHandler {
 	
 	public abstract boolean canHandle(char cmdChar);
 	public abstract String handle(String cmd);
-
-	
-	/*public R2CmdHandler setPos(int pos){
-		cmdPos=pos;
-		return this;
-	}*/
 	
 	public boolean canHandle(String cmd) {
 		return canHandle(cmd.charAt(cmdPos));
@@ -25,4 +19,14 @@ public abstract class R2CmdHandler {
 	protected static String hexAddress(Long addr) {
 		return "0x" + String.format("%1$08x", addr);
 	}
+	
+	public static Address atAddress(String cmd) {
+		String[] parts = cmd.split("@");
+		if (parts.length<2) return GhidraR2State.r2Seek;
+		String addrString=parts[1].trim();
+		GhidraR2State.r2Seek=GhidraR2State.api.toAddr(addrString);
+		return GhidraR2State.r2Seek;
+	}
+	
+	
 }

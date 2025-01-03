@@ -8,6 +8,8 @@ import java.util.List;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
+import ghidra.program.model.address.Address;
+
 public class GhidraR2WebCmdHandler implements HttpHandler {
 
 	// TODO This should be a tree/forest!
@@ -46,12 +48,20 @@ public class GhidraR2WebCmdHandler implements HttpHandler {
 			cmd = exchange.getRequestURI().getPath().substring(5);
 		}
 		if (cmd != null) {
+			Address originalSeek=GhidraR2State.r2Seek;
+			Address tmpSeek=R2CmdHandler.atAddress(cmd);
 			for (R2CmdHandler h : handlers) {
 				if (h.canHandle(cmd)) {
 					byte[] response = h.handle(cmd).getBytes();
 					sendResponse(exchange, response);
 					return;
 				}
+			}
+			// If the command itself didn't change the seek position,
+			// but there was a temporary seek position
+			// we restore the original position
+			if (GhidraR2State.r2Seek.equals(tmpSeek) && !tmpSeek.equals(originalSeek)){
+				GhidraR2State.r2Seek=originalSeek;
 			}
 		} else {
 			sendErrorResponse(400, exchange, "Empty request".getBytes());
