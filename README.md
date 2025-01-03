@@ -1,12 +1,10 @@
-ghidra-r2web
-============
+# ghidra-r2web
 
 This repository contains integration scripts to interop Ghidra and radare2.
 
 It's just an Ghidra plugin that starts an http server to let r2 talk to it.
 
-Features
---------
+## Features
 
 * Decompile current function
 * Load the decompiler output as comments
@@ -15,34 +13,40 @@ Features
 * Import comments from Ghidra into r2
 * Read/Write ghidra's session remote memory contents
 
-Usage
------
+## Usage
 
-* Install Ghidra using r2pm
+* Install Ghidra using r2pm or downloading it from the web
 
-	$ r2pm -i ghidra
+```bash
+$ r2pm -i ghidra
+```
 
 * Symlink the R2GhidraServer.java into the ghidra plugins directory
 
-	$ make install
+```bash
+$ make install
+````
 
 * Start ghidra and doubleclick the script to get the http server
 
-	$ r2pm -r ghidraRun
+```bash
+$ r2pm -r ghidraRun
+```
 
 * Attach r2 to the ghidra session
 
-	$ r2 r2web://localhost:8002/cmd
+```bash
+$ r2 r2web://localhost:8002/cmd
+```
 
 * Run commands into the ghidra server from r2 or the shell
 
 	* :pdd
 	* !curl http://localhost:8002/cmd/p8%2080
 
-Sample session
---------------
+## Sample session
 
-```
+```bash
 $ r2 r2web://localhost:9191/cmd
 [0x00000000]> :?
 Usage: [ghidra-r2web-command .. args]
