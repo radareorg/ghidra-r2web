@@ -15,7 +15,6 @@ public class R2PrintHexCmd extends R2CmdHandler {
 
 	@Override
 	public String handle(String cmd) {
-		// TODO Auto-generated method stub
 		return "px not implemented\n";
 	}
 
