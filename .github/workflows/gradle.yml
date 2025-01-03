@@ -41,6 +41,7 @@ jobs:
 
     - name: Build with Gradle Wrapper
       run: gradle buildExtension
+      working-directory: ./GhidraR2Web
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
