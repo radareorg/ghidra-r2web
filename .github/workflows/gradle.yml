@@ -40,7 +40,7 @@ jobs:
         gradle-version: '8.5'
 
     - name: Build with Gradle Wrapper
-      run: ./gradlew buildExtension
+      run: gradle buildExtension
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
