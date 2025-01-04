@@ -1,5 +1,7 @@
 # ghidra-r2web
 
+[![Build Extension](https://github.com/radareorg/ghidra-r2web/actions/workflows/gradle.yml/badge.svg)](https://github.com/radareorg/ghidra-r2web/actions/workflows/gradle.yml)
+
 This repository contains integration scripts to interop Ghidra and radare2.
 
 It's just an Ghidra plugin that starts an http server to let r2 talk to it.
