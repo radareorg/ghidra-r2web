@@ -2,6 +2,7 @@
 
 This is the original `ghidra-r2web` script refactored into a Ghidra module. Implementation is mostly taken as-is in the hope that fixes will be easier in the new code structure, any feedback is appreciated. Please use the [Issue tracker](https://github.com/radareorg/ghidra-r2web/issues)!
 
+
 ## Build
 
 SDKMan environment configuration is provided.
@@ -13,11 +14,17 @@ gradle buildExtension
 
 The extension .zip will be created in `dist/`.
 
+### IDEA
+
+A Run Configuration is provided for IntelliJ IDEA. To make it work you should set the location of your Ghidra installation by adding the `GHIDRA_INSTALL_DIR` Path Variable under `File->Settings->Path Variables`.
+
+
 ## Install
 
 In **Ghidra Project Manager** choose `File->Install Extensions`. In the top right corner of the new window click the green plus sign, and choose the distribution ZIP. Restart Ghidra as instructed.
 
 After restart open the **Code Browser**, that should offer you to configure the new extension. Accept and tick the checkbox next to the plugin name. If this option is not offered you can use the `File->Configure` menu item, then click the Configure link under Ghidra Core to navigate to the same GUI for enabling the plugin.
+
 
 ## Usage
 
