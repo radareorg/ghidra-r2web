@@ -58,7 +58,7 @@ jobs:
       working-directory: ./R4Ghidra
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: R4Ghidra_Ghidra_${{ matrix.ghidra }}
         path: R4Ghidra/dist/*.zip
@@ -98,7 +98,7 @@ jobs:
       working-directory: ./R4Ghidra
 
     - name: Upload documentation
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: R4Ghidra-javadoc
         path: R4Ghidra/R4Ghidra-javadoc.zip
